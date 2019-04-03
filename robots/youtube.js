@@ -4,7 +4,7 @@ const readline = require('readline-sync')
 
 const youtube = google.youtube({
     version: 'v3',
-    auth: 'AIzaSyA-uyfSWZSRjelIPxUDl86ZZDls82k3ZOw'
+    auth: ''
 });
 
 async function youtubeBot(channelId) {
