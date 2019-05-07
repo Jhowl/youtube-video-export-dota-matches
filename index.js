@@ -1,19 +1,25 @@
-const readline = require('readline-sync')
+// const readline = require('readline-sync')
+
 const robots = {
-    youtube: require('./robots/youtube')
+    youtube: require('./robots/youtube'),
 }
 
+const Reader = require('./robots/readerMedia')
+
+
 async function start() {
-    const channel = {}
+  const files = new Reader()
+  const matches = files.getIdsMatches()
 
-    channel.searchChannel = askAndReturnChannelId();
-    channel.info          = await robots.youtube(channel.searchChannel)
+  // channel.searchChannel = askAndReturnChannelId();
+  // channel.info          = await robots.youtube(channel.searchChannel)
 
-    function askAndReturnChannelId(){
-        return readline.question('Type Channel ID on Youtube: ')
-    }
+  // function askAndReturnChannelId(){
+  //     return readline.question('Type Channel ID on Youtube: ')
+  // }
 
-    console.log(channel)
+  // console.log(files)
+  // console.log(idMatches)
 }
 
 start();

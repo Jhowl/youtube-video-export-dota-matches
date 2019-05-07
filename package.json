@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Jhowl/youtube-video-export-wordpress-site#readme",
   "dependencies": {
+    "dotaconstants": "^6.17.0",
     "googleapis": "^39.1.0",
     "readline-sync": "^1.4.9"
   }
