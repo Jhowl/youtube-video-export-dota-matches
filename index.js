@@ -12,8 +12,10 @@ async function start() {
   const matches = files.getIdsMatches()
   
   for (let i = 0, len = matches.length; i < len; i++) {
-    await robots.dota(matches[i])
+    // await robots.dota(matches[i])
   }
+
+  await robots.youtube()
 
   // channel.searchChannel = askAndReturnChannelId();
   // channel.info          = await robots.youtube(channel.searchChannel)

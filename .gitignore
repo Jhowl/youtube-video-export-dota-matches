@@ -2,3 +2,4 @@ node_modules/
 yarn.lock
 videos/*.flv
 .env
+credentials/*.json

@@ -1,60 +1,169 @@
-const { google } = require('googleapis')
-const readline = require('readline-sync')
+const express = require('express')
+const google = require('googleapis').google
+const youtube = google.youtube({ version: 'v3'})
+const OAuth2 = google.auth.OAuth2
+const fs = require('fs')
 
-const youtube = google.youtube({
-    version: 'v3',
-    auth: 'AIzaSyA-uyfSWZSRjelIPxUDl86ZZDls82k3ZOw'
-});
+async function robot() {
+  console.log('> [youtube-robot] Starting...')
+ // const content = state.load()
 
-async function youtubeBot(channelId) {
-    
-    const channel = await getChannelById(channelId)
-    verifyIfIsCorrectChannel(channel);
+  await authenticateWithOAuth()
+  const videoInformation = await uploadVideo()
+  //await uploadThumbnail(videoInformation)
 
-    async function getChannelById (id) {
-        const channel =  await youtube.channels.list({
-            part: 'id,snippet',
-            id
+  async function authenticateWithOAuth() {
+      console.log('oiii')
+    const webServer = await startWebServer()
+    console.log('oiii34')
+
+    const OAuthClient = await createOAuthClient()
+    console.log('oiii53454')
+
+    requestUserConsent(OAuthClient)
+    const authorizationToken = await waitForGoogleCallback(webServer)
+    await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
+    await setGlobalGoogleAuthentication(OAuthClient)
+    await stopWebServer(webServer)
+
+    async function startWebServer() {
+      return new Promise((resolve, reject) => {
+        const port = 5000
+        const app = express()
+
+        const server = app.listen(port, () => {
+          console.log(`> [youtube-robot] Listening on http://localhost:${port}`)
+
+          resolve({
+            app,
+            server
+          })
         })
-    
-        return channel.data.items[0].snippet
+      })
     }
+
+    async function createOAuthClient() {
+      const credentials = require('../credentials/google-youtube.json')
+
+      console.log(credentials)
+      
+
+      const OAuthClient = new OAuth2(
+        credentials.web.client_id,
+        credentials.web.client_secret,
+        credentials.web.redirect_uris[0]
+      )
     
-    function verifyIfIsCorrectChannel(channel){
-        console.log('Correct Channel is ' + channel.title)
-        const Options = ['No', 'Yes']
-        const selectedOption = readline.keyInSelect(Options)
-        
-        return selectedOption ? channel : false
+      console.log(`> [youtube-robot] OAuthClient`)
+      return OAuthClient
     }
+
+    function requestUserConsent(OAuthClient) {
+      const consentUrl = OAuthClient.generateAuthUrl({
+        access_type: 'offline',
+        scope: ['https://www.googleapis.com/auth/youtube']
+      })
+
+      console.log(`> [youtube-robot] Please give your consent: ${consentUrl}`)
+    }
+
+    async function waitForGoogleCallback(webServer) {
+      return new Promise((resolve, reject) => {
+        console.log('> [youtube-robot] Waiting for user consent...')
+
+        webServer.app.get('/oauth2callback', (req, res) => {
+          const authCode = req.query.code
+          console.log(`> [youtube-robot] Consent given: ${authCode}`)
+
+          res.send('<h1>Thank you!</h1><p>Now close this tab.</p>')
+          resolve(authCode)
+        })
+      })
+    }
+
+    async function requestGoogleForAccessTokens(OAuthClient, authorizationToken) {
+      return new Promise((resolve, reject) => {
+        OAuthClient.getToken(authorizationToken, (error, tokens) => {
+          if (error) {
+            return reject(error)
+          }
+
+          console.log('> [youtube-robot] Access tokens received!')
+
+          OAuthClient.setCredentials(tokens)
+          resolve()
+        })
+      })
+    }
+
+    function setGlobalGoogleAuthentication(OAuthClient) {
+      google.options({
+        auth: OAuthClient
+      })
+    }
+
+    async function stopWebServer(webServer) {
+      return new Promise((resolve, reject) => {
+        webServer.server.close(() => {
+          resolve()
+        })
+      })
+    }
+  }
+
+  async function uploadVideo() {
+    const videoFilePath = './videos/4689993403.flv'
+    const videoFileSize = fs.statSync(videoFilePath).size
+    const videoTitle = `aaaaaaaaaaaaaaaaaaaaaaaa`
+    const videoTags = '2312323'
+    const videoDescription = 'wewe'
+
+    const requestParameters = {
+      part: 'snippet, status',
+      requestBody: {
+        snippet: {
+          title: videoTitle,
+          description: videoDescription,
+          tags: videoTags
+        },
+        status: {
+          privacyStatus: 'unlisted'
+        }
+      },
+      media: {
+        body: fs.createReadStream(videoFilePath)
+      }
+    }
+
+    console.log('> [youtube-robot] Starting to upload the video to YouTube')
+    const youtubeResponse = await youtube.videos.insert(requestParameters, {
+      onUploadProgress: onUploadProgress
+    })
+
+    console.log(`> [youtube-robot] Video available at: https://youtu.be/${youtubeResponse.data.id}`)
+    return youtubeResponse.data
+
+    function onUploadProgress(event) {
+      const progress = Math.round( (event.bytesRead / videoFileSize) * 100 )
+      console.log(`> [youtube-robot] ${progress}% completed`)
+    }
+  }
+
+  async function uploadThumbnail(videoInformation) {
+    const videoId = videoInformation.id
+    const videoThumbnailFilePath = './content/youtube-thumbnail.jpg'
+
+    const requestParameters = {
+      videoId: videoId,
+      media: {
+        mimeType: 'image/jpeg',
+        body: fs.createReadStream(videoThumbnailFilePath)
+      }
+    }
+
+    const youtubeResponse = await youtube.thumbnails.set(requestParameters)
+    console.log(`> [youtube-robot] Thumbnail uploaded!`)
+  }
 }
 
-
-// const getVideosByPlaylistId = async (playlistId) => {
-//     const res = await youtube.playlistItems.list({
-//         part: 'id,snippet',
-//         maxResults: 6,
-//         playlistId
-//     })
-
-//   console.log(res.data.items[5].snippet)
-
-// }
-
-// // getVideosByPlaylistId('PLxS8KNFeOdxGW9wFsiNBJWefWyBGSweRb')
-
-
-// const getVideosSearch = async (channelId) =>{
-//     const res = await youtube.search.list({
-//         part: 'id,snippet',
-//         maxResults: 50,
-//         channelId
-//     })
-
-//   console.log(res.data.items[5].snippet)
-// //   console.log(res.data)
-// }
-
-// getVideosSearch('UCAdxdCvv8q7aKOzvFildMpw')
-
-module.exports = youtubeBot
+module.exports = robot
