@@ -12,8 +12,6 @@ async function robot(id) {
     info.player = await getPlayerBaseInfo(info.match.players)
 
     content = getContent(info)
-
-    console.log(content)
 }
 
 async function getMatchInfo (id){
@@ -24,8 +22,6 @@ async function getMatchInfo (id){
 
 async function getPlayerBaseInfo(players){
     const player = {}
-
-    // console.log(players)
 
     for (let i = 0, len = players.length; i < len; i++) {
         if(players[i].account_id === env.steamId ){

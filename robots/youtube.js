@@ -11,6 +11,7 @@ async function robot(content) {
   await authenticateWithOAuth()
   const videoInformation = await uploadVideo(content)
   //await uploadThumbnail(videoInformation)
+  deleteFileVideo(content.id)
 
   async function authenticateWithOAuth() {
     const webServer = await startWebServer()
@@ -157,6 +158,13 @@ async function robot(content) {
 
     const youtubeResponse = await youtube.thumbnails.set(requestParameters)
     console.log(`> [youtube-robot] Thumbnail uploaded!`)
+  }
+
+  function deleteFileVideo(id) {
+    fs.unlink(`./videos/${id}.flv`, (err) => {
+      if (err) throw err;
+      console.log(`./videos/${id}.flv`);
+    })
   }
 }
 
