@@ -4,22 +4,17 @@ const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
 const fs = require('fs')
 
-async function robot() {
+async function robot(content) {
   console.log('> [youtube-robot] Starting...')
  // const content = state.load()
 
   await authenticateWithOAuth()
-  const videoInformation = await uploadVideo()
+  const videoInformation = await uploadVideo(content)
   //await uploadThumbnail(videoInformation)
 
   async function authenticateWithOAuth() {
-      console.log('oiii')
     const webServer = await startWebServer()
-    console.log('oiii34')
-
     const OAuthClient = await createOAuthClient()
-    console.log('oiii53454')
-
     requestUserConsent(OAuthClient)
     const authorizationToken = await waitForGoogleCallback(webServer)
     await requestGoogleForAccessTokens(OAuthClient, authorizationToken)
@@ -47,7 +42,6 @@ async function robot() {
 
       console.log(credentials)
       
-
       const OAuthClient = new OAuth2(
         credentials.web.client_id,
         credentials.web.client_secret,
@@ -111,12 +105,12 @@ async function robot() {
     }
   }
 
-  async function uploadVideo() {
-    const videoFilePath = './videos/4689993403.flv'
+  async function uploadVideo(content) {
+    const videoFilePath = `./videos/${content.id}.flv`
     const videoFileSize = fs.statSync(videoFilePath).size
-    const videoTitle = `aaaaaaaaaaaaaaaaaaaaaaaa`
-    const videoTags = '2312323'
-    const videoDescription = 'wewe'
+    const videoTitle = content.title
+    const videoTags = content.tags
+    const videoDescription = content.description
 
     const requestParameters = {
       part: 'snippet, status',
@@ -127,7 +121,7 @@ async function robot() {
           tags: videoTags
         },
         status: {
-          privacyStatus: 'unlisted'
+          privacyStatus: 'private'
         }
       },
       media: {
