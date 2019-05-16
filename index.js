@@ -13,6 +13,8 @@ async function start() {
 
   for (let i = 0, len = matches.length; i < len; i++) {
     const info =  await robots.dota(matches[i])
+    console.log(info)
+    await robots.youtube(info)
   }
 }
 

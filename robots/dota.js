@@ -12,6 +12,8 @@ async function robot(id) {
     info.player = await getPlayerBaseInfo(info.match.players)
 
     content = getContent(info)
+
+    return content
 }
 
 async function getMatchInfo (id){
