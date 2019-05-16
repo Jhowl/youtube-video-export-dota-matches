@@ -4,6 +4,8 @@ const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
 const fs = require('fs')
 
+const upload = {}
+
 async function robot(content) {
   console.log('> [youtube-robot] Starting...')
  // const content = state.load()
@@ -140,7 +142,10 @@ async function robot(content) {
 
     function onUploadProgress(event) {
       const progress = Math.round( (event.bytesRead / videoFileSize) * 100 )
-      console.log(`> [youtube-robot] ${progress}% completed`)
+      if (upload.progress !== progress) {
+        upload.progress = progress
+        console.log(`> [youtube-robot] ${progress}% completed`)
+      }
     }
   }
 
