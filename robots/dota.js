@@ -71,23 +71,21 @@ function getContent({match, player}){
 
     data.title = `Partida jogando com ${heroName} | Dota 2 ${result}`
 
-    data.description = `
-    Partida jogando com ${heroName}
-    Com o K/D/A de ${player.kills}/${player.deaths}/${player.assists} com o total de ouro (Patrimônio Líquido) de ${player.total_gold}g
-    Jogando do lado dos ${player.sideMap} no map
-    ID da partida: ${data.id}
+    data.description = `Partida jogando com ${heroName}
+Com o K/D/A de ${player.kills}/${player.deaths}/${player.assists} com o total de ouro (Patrimônio Líquido) de ${player.total_gold}g
+Jogando do lado dos ${player.sideMap} no map
+ID da partida: ${data.id}
 
-    Os itens que fechei para essa partida são:
-    ${itens}
+Os itens que fechei para essa partida são:
+${itens}
 
-    Criando um histórico (archive) de partidas e gameplays que faço e deixando salvo aqui no youtube para futuras lembranças e compartilhamento com a web.
+Criando um histórico (archive) de partidas e gameplays que faço e deixando salvo aqui no youtube para futuras lembranças e compartilhamento com a web.
 
-    jogando com os amigos:
+jogando com os amigos:
 
-    #dota2 #${heroName.replace(/ /g,'')}
-    `
+#dota2 #${heroName.replace(/ /g,'')}`
 
-    data.tag = `dota 2, dota2 ${heroName}, partida completa de ${heroName}, jogando com ${heroName}, partida completa, ${player.name}, ${itensTag}, ${player.sideMap}, gameplay`
+    data.tag = (`dota 2, dota2 ${heroName}, partida completa de ${heroName}, jogando com ${heroName}, partida completa, ${player.name}, ${itensTag}, ${player.sideMap}, gameplay, game,  gameplay ${heroName}, moba`).split(', ')
 
     return data;
 }

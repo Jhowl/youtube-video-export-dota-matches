@@ -10,12 +10,13 @@ const Reader  = require('./robots/readerMedia')
 async function start() {
   const files = new Reader()
   const matches = files.getIdsMatches()
+  const info = []
 
   for (let i = 0, len = matches.length; i < len; i++) {
-    const info =  await robots.dota(matches[i])
-    console.log(info)
-    await robots.youtube(info)
+    info.push(await robots.dota(matches[i]))
   }
+
+  await robots.youtube(info)
 }
 
 start();

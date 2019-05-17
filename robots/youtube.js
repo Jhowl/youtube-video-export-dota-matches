@@ -4,16 +4,20 @@ const youtube = google.youtube({ version: 'v3'})
 const OAuth2 = google.auth.OAuth2
 const fs = require('fs')
 
-const upload = {}
+const uploadStats = {}
 
-async function robot(content) {
+async function robot(videos) {
   console.log('> [youtube-robot] Starting...')
- // const content = state.load()
-
+  uploadStats.total = videos.length
   await authenticateWithOAuth()
-  const videoInformation = await uploadVideo(content)
-  //await uploadThumbnail(videoInformation)
-  deleteFileVideo(content.id)
+  
+  for (let i = 0, len = videos.length; i < len; i++) {
+    uploadStats.file = i + 1
+
+    const videoInformation = await uploadVideo(videos[i])
+    // await uploadThumbnail(videoInformation)
+    deleteFileVideo(videos[i].id)
+  }
 
   async function authenticateWithOAuth() {
     const webServer = await startWebServer()
@@ -115,6 +119,8 @@ async function robot(content) {
     const videoTags = content.tags
     const videoDescription = content.description
 
+    console.log('> [youtube-robot] Title:' + videoTitle )
+
     const requestParameters = {
       part: 'snippet, status',
       requestBody: {
@@ -142,9 +148,9 @@ async function robot(content) {
 
     function onUploadProgress(event) {
       const progress = Math.round( (event.bytesRead / videoFileSize) * 100 )
-      if (upload.progress !== progress) {
-        upload.progress = progress
-        console.log(`> [youtube-robot] ${progress}% completed`)
+      if (uploadStats.progress !== progress) {
+        uploadStats.progress = progress
+        console.log(`> [youtube-robot] ${progress}% completed \n File ${uploadStats.file}/${uploadStats.total}`)
       }
     }
   }
@@ -168,7 +174,7 @@ async function robot(content) {
   function deleteFileVideo(id) {
     fs.unlink(`./videos/${id}.flv`, (err) => {
       if (err) throw err;
-      console.log(`./videos/${id}.flv`);
+      console.log(`Deleted file ./videos/${id}.flv`);
     })
   }
 }
