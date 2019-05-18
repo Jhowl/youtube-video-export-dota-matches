@@ -3,3 +3,4 @@ yarn.lock
 videos/*.flv
 .env
 credentials/*.json
+content/*.png

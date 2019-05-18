@@ -1,5 +1,3 @@
-// const readline = require('readline-sync')
-
 const robots = {
     youtube: require('./robots/youtube'),
     dota: require('./robots/dota')

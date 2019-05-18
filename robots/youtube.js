@@ -15,7 +15,7 @@ async function robot(videos) {
     uploadStats.file = i + 1
 
     const videoInformation = await uploadVideo(videos[i])
-    // await uploadThumbnail(videoInformation)
+    // await uploadThumbnail(videoInformation, videos[i].thumbnail)
     deleteFileVideo(videos[i].id)
   }
 
@@ -116,10 +116,10 @@ async function robot(videos) {
     const videoFilePath = `./videos/${content.id}.flv`
     const videoFileSize = fs.statSync(videoFilePath).size
     const videoTitle = content.title
-    const videoTags = content.tags
+    const videoTags = [content.tags]
     const videoDescription = content.description
 
-    console.log('> [youtube-robot] Title:' + videoTitle )
+    console.log('> [youtube-robot] Content:' + content )
 
     const requestParameters = {
       part: 'snippet, status',
@@ -143,6 +143,7 @@ async function robot(videos) {
       onUploadProgress: onUploadProgress
     })
 
+    console.log('> [youtube-robot] Title:' + videoTitle )
     console.log(`> [youtube-robot] Video available at: https://youtu.be/${youtubeResponse.data.id}`)
     return youtubeResponse.data
 
@@ -155,9 +156,9 @@ async function robot(videos) {
     }
   }
 
-  async function uploadThumbnail(videoInformation) {
+  async function uploadThumbnail(videoInformation, thumbnail) {
     const videoId = videoInformation.id
-    const videoThumbnailFilePath = './content/youtube-thumbnail.jpg'
+    const videoThumbnailFilePath = thumbnail
 
     const requestParameters = {
       videoId: videoId,
