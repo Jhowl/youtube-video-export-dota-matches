@@ -15,7 +15,7 @@ async function robot(videos) {
     uploadStats.file = i + 1
 
     const videoInformation = await uploadVideo(videos[i])
-    // await uploadThumbnail(videoInformation, videos[i].thumbnail)
+    await uploadThumbnail(videoInformation, videos[i].thumbnail)
     deleteFileVideo(videos[i].id)
   }
 

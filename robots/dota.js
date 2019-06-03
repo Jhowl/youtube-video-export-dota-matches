@@ -92,14 +92,15 @@ function getContent({match, player}){
     const heroName = player.hero[0].localized_name
     const itens = player.itens.filter(value => value !== '').join(' \n ')
     const itensTag = player.itens.filter(value => value !== '').join(', ')
-    const result = player.win ? 'Win' : 'Lose'
+    const result = player.win ? 'Vitória' : 'Derrota'
 
     data.id = match.match_id
     data.title = `Partida jogando com ${heroName} | Dota 2`
     data.thumbnail = player.heroThumbnail
-    data.description = `Partida jogando com ${heroName}
+    data.description = `Partida jogando com herói ${heroName} do dota 2 no patch 7.22
 Com o K/D/A de ${player.kills}/${player.deaths}/${player.assists} com o total de ouro (Patrimônio Líquido) de ${player.total_gold}g
-Jogando do lado dos ${player.sideMap} no map
+
+Jogando do lado dos ${player.sideMap} do mapa
 ID da partida: ${data.id}
 
 Os itens que foram feitos para ${heroName} nesta partida são:
@@ -113,11 +114,11 @@ Eu sou o agresif hamster e tambem conhecido como Jhowl.
 
 jogando com os amigos:
 
-Resultado da partida do dota 2 foi : ${result}
+Resultado dessa partida de dota 2 foi uma ${result} com ${heroName} 
 
 #dota2 #${heroName.replace(/ /g,'')}`
 
-    data.tags = `dota 2, dota2 ${heroName}, partida completa de ${heroName}, jogando com ${heroName}, partida completa, ${player.name}, ${itensTag}, ${player.sideMap}, gameplay, game, gameplay ${heroName}, moba`
+    data.tags = ` ${heroName}, dota 2, dota2 ${heroName}, partida completa de ${heroName}, jogando com ${heroName}, partida completa, ${player.name}, ${itensTag}, ${player.sideMap}, gameplay, game, gameplay ${heroName}, moba, jhowl`
 
     return data;
 }
