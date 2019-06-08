@@ -25,10 +25,13 @@ async function getMatchInfo (id){
 
 async function getPlayerBaseInfo(players){
     const player = {}
+    const names = []
 
     for (let i = 0, len = players.length; i < len; i++) {
-        if(players[i].account_id !== env.steamId )
+        if(players[i].account_id !== env.steamId ){
+            names.push(players[i].personaname)
             continue;
+        }
 
         const itens = getItensById([
             players[i].item_0,
@@ -53,6 +56,8 @@ async function getPlayerBaseInfo(players){
         player.total_gold =  players[i].total_gold
         player.itens = itens
     }
+
+    player.names = names
 
     return player
 }
@@ -91,6 +96,7 @@ function getContent({match, player}){
     const data = {}
     const heroName = player.hero[0].localized_name
     const itens = player.itens.filter(value => value !== '').join(' \n ')
+    const players = player.names.filter(value => value !== undefined).join(' \n ')
     const itensTag = player.itens.filter(value => value !== '').join(', ')
     const result = player.win ? 'Vitória' : 'Derrota'
 
@@ -112,7 +118,8 @@ Criando um histórico (archive) de partidas e gameplays que faço e deixando sal
 
 Eu sou o agresif hamster e tambem conhecido como Jhowl.
 
-jogando com os amigos:
+jogadores nesta partida:
+${players}
 
 Resultado dessa partida de dota 2 foi uma ${result} com ${heroName} 
 
