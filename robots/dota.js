@@ -114,7 +114,8 @@ ${itens}
 
 Acesse Meu site: https://jhowl.com
 
-Criando um histórico (archive) de partidas e gameplays que faço e deixando salvo aqui no youtube para futuras lembranças e compartilhamento com a web.
+Criando um histórico (archive) de partidas e gameplays que faço e deixando salvo aqui no youtube para futuras lembranças e compartilhamento com a web. 
+Video do jogo está completo com a resolução 1080p a 60fps
 
 Eu sou o agresif hamster e tambem conhecido como Jhowl.
 

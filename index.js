@@ -14,11 +14,11 @@ async function start() {
     info.push(await robots.dota(matches[i]))
   }
 
-  // console.log(info[0].description)
-  // console.log(info[0].tags)
+  console.log(info[0].description)
+  console.log(info[0].tags)
 
 
-  await robots.youtube(info)
+  // await robots.youtube(info)
 }
 
 start();
